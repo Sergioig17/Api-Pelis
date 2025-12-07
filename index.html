@@ -4,19 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pelis</title>
-    <script src="index.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="src/index.js"></script>
+    <link rel="stylesheet" href="src/style/style.css">
 </head>
-<header>
-    <h1>Buscador de peliculas</h1>
-    <input  id="buscador"type="text" value="">
-    <input id="envio"type="button" value="Buscar">
-    
-</header>
-<body>
-    <div id="peliculas">
-
-        
-    </div>
-</body>
+<section id="Free-lance">
+    <h1>Bienvenido a mi pagina</h1>
+    <button id="open">Abrir Buscador</button>
+</section>
+<section id="BuscadorPelis">
+    <header>
+        <h1>Buscador de peliculas</h1>
+        <form>
+            <input  id="buscador"type="text" value="" placeholder="Titulo de la pelicula">
+            <select name="seleccion" id="seleccion">
+                <option value="">--Serie y pelicula--</option>
+                <option value="series">Serie</option>
+                <option value="movie">Pelicula</option>
+            </select>
+            <input id="año" type="text" value="" placeholder="Año de estreno">
+            <input
+        </form>
+    </header>
+    <body>
+        <div id="peliculas">
+        </div>
+    </body>
+</section>
 </html>

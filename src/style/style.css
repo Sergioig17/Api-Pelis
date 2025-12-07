@@ -1,0 +1,225 @@
+/* ======== RESET ======== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #1c1c1c;
+    color: white;
+}
+
+
+/* ======== SECCIÓN FREE-LANCE ======== */
+#Free-lance {
+    width: 100%;
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #111, #1e1e1e);
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+
+#Free-lance h1 {
+    font-size: 36px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+#Free-lance button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    background: #ffcc00;
+    color: #111;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+#Free-lance button:hover {
+    background: #ffe066;
+    transform: scale(1.07);
+}
+
+#BuscadorPelis{
+    display: none;
+}
+
+/* ======== HEADER ======== */
+header {
+    width: 100%;
+    padding: 20px;
+    background: #111;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+header form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+header input,
+header select {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    width: 180px;
+    font-size: 15px;
+}
+
+header input:focus,
+header select:focus {
+    outline: 2px solid #ff0000;
+}
+
+/* ======== GRID DE PELÍCULAS ======== */
+#peliculas {
+    width: 100%;
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap:2vw;
+    justify-content: space-evenly;
+}
+
+.peliculas__pelicula {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    background: #222;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 0 6px rgba(255,255,255,0.1);
+}
+
+.peliculas__pelicula:hover {
+    transform: scale(1.05);
+    background: #333;
+}
+
+.peliculas__peliculas--img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.peliculas__pelicula__pelifoot{
+    width: 100%;
+    height: 20%;
+}
+.peliculas__pelicula__pelifoot{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1%;
+    margin-top: 5%;
+}
+.peliculas__pelicula__pelifoot__titulo{
+    width: 70%;
+}
+.peliculas__pelicula__pelifoot__favboton{
+    width: 30px;
+    margin: 3%;
+    justify-self: left;
+}
+.peliculas__pelicula__pelifoot__favboton img{
+    width: 100%;
+    height: 100%;
+}
+/* ======== DETALLES ======== */
+#fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(56, 24, 56, 0.75);
+    backdrop-filter: blur(3px);
+    z-index: 20;
+}
+
+#detalles {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(900px, 95%);
+    background: #535353;
+    border-radius: 15px;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    color: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    z-index: 21;
+}
+
+#portada img {
+    width: 250px;
+    border-radius: 10px;
+}
+#muestra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1%;
+    max-height: 65vh;
+}
+
+#muestra__titulo{
+    position:relative;
+    margin-right:80%;
+}
+#plotdetalle {
+    padding: 10px;
+    background: #272727;
+    border-radius: 8px;
+}
+
+/* ======== RESPONSIVE POPUP ======== */
+@media (max-width: 700px) {
+    #peliculas{
+        gap:8vh
+    }
+    #detalles {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #portada img {
+        width: 60%;
+    }
+}
+@media (max-width: 700px) {
+    #Free-lance h1 {
+        font-size: 28px;
+    }
+
+    #Free-lance button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
