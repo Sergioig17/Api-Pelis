@@ -14,7 +14,7 @@
 <section id="BuscadorPelis">
     <header>
         <h1>Buscador de peliculas</h1>
-        <form>
+        <form id="formulario">
             <input  id="buscador"type="text" value="" placeholder="Titulo de la pelicula">
             <select name="seleccion" id="seleccion">
                 <option value="">--Serie y pelicula--</option>
@@ -22,7 +22,14 @@
                 <option value="movie">Pelicula</option>
             </select>
             <input id="año" type="text" value="" placeholder="Año de estreno">
-            <input
+
+            <div class="favoritos">
+                <div class="favoritos__titulo">¿Favoritos?</div>
+                <div class="favoritos__marca">
+                    <input type="checkbox" name="marcafav" class="favoritos__marca__check">
+                </div>
+            </div>
+
         </form>
     </header>
     <body>

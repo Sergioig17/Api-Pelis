@@ -8,13 +8,15 @@
     let clave="a4b93c09";
     let scrolleando=false;
     let arrayfavoritos;
+    let busquedafavs;
     window.onload=()=>{
-        arrayfavoritos=localStorage.getItem("Favoritos");
         seleccion=document.getElementById("seleccion");
         buscar=document.getElementById("buscador");
         cambioVentana();
         arrayfavoritos=JSON.parse(localStorage.getItem("pelisFav"))==null?[]:JSON.parse(localStorage.getItem("pelisFav"));
     }
+
+
     function cambioVentana(){
         let abrir=document.getElementById("open");
         let buscadorPeli=document.getElementById("BuscadorPelis");
@@ -29,14 +31,28 @@
 
     function comienzo(){
         busqueda="Pokemon";
-        fetch(url+"s="+busqueda+"&apikey="+clave+"&page="+pagina+(seleccion.value!=""?("&type="+seleccion.value):"")).then(response=> response.json()).then(data=>{
-            montaje(data.Search);
-            pagina++;
-        })
+       llamadaapi();
     }
 
 
     function busquedas(){
+        let marcafavs=document.getElementsByClassName("favoritos");
+        marcafavs[0].children[1].addEventListener("change",(e)=>{
+            if(e.target.checked){
+              busquedafavs=true;
+            }
+            if(!e.target.checked){
+                busquedafavs=false;
+            }
+            primera_buqueda=true;
+            pagina=1;
+            if(buscar.value=="" && busquedafavs){
+                llamadafavsgeneral();
+            }
+            else
+                llamadaapi();
+        })
+        //Para cuando cambias la fecha cambie lo que ves
         let anio=document.getElementById("año");
         anio.addEventListener("keyup",(e)=>{
             if(!isNaN(Number(anio.value))){
@@ -47,10 +63,18 @@
                     busqueda=buscar.value;
                     llamadaapi()
                 }
+                if(buscar.value==""){
+                    if(busquedafavs){
+                        llamadafavsgeneral();
+                    }else{
+                        busqueda="pokemon";
+                        llamadaapi();
+                    }
+                }
             }
         });
-
-        buscar.addEventListener("keyup",(e)=>{
+        //Estos dos son para cuando cambias algo en el nombre 
+        buscar.addEventListener("keyup",(e)=>{    
             if(buscar.value.length>=3){
                 if((e.key.length==1||e.key=="Backspace")&&((!isNaN(Number(anio.value))&&anio.value.length>=4)||anio.value=="")){
                     primera_buqueda=true;
@@ -59,7 +83,17 @@
                     llamadaapi()
                 }
             }
+            if(buscar.value==""){
+                if(busquedafavs){
+                    llamadafavsgeneral();
+                }else{
+                    busqueda="pokemon";
+                    llamadaapi();
+                }
+                    
+            }
         });
+
         buscar.addEventListener("change",()=>{
             if(buscar.value.length>=3){
                 primera_buqueda=true;
@@ -72,8 +106,10 @@
         window.onscroll=()=>{
             scrolleando=true;
             if((window.innerHeight+window.scrollY)>= (document.body.offsetHeight-document.body.offsetHeight*0.15)){
-                llamadaapi();
-                pagina++;
+                if(!busquedafavs){
+                    llamadaapi();
+                    pagina++;
+                }
             }
         }
     }
@@ -83,22 +119,43 @@
         if(!peticionEnCurso){
             peticionEnCurso=true;
             fetch(url+"s="+busqueda+"&apikey="+clave+"&page="+pagina+(seleccion.value!=""?("&type="+seleccion.value):"")+(anio.value!=""?("&y="+anio.value):"")).then(response=> response.json()).then(data=>{
-                montaje(data.Search);
+                montajeBusqueda(data.Search);
+                peticionEnCurso=false;
             });
-            peticionEnCurso=false;
+           
         }
-            
+    }
+
+    function llamadafavsgeneral(){
+        let peliculas=document.getElementById("peliculas");
+        peliculas.innerHTML="";
+        arrayfavoritos.forEach((codigo,index)=>{
+            fetch(url+"i="+codigo+"&apikey="+clave).then(response=> response.json()).then(data=>{
+                creacionpelis(data);
+            });
+        })
     }
 
 
-    function montaje(listado){
+    function montajeBusqueda(listado){
         let peliculas=document.getElementById("peliculas");
         if(primera_buqueda){
             peliculas.innerHTML="";
             primera_buqueda=false;
         }
-        listado.forEach(pelicula => {
-            let divprin=document.createElement("div");
+        listado.forEach(pelicula =>{
+            if(busquedafavs && arrayfavoritos.indexOf(pelicula.imdbID)!=-1)
+                creacionpelis(pelicula);
+            else
+                if(!busquedafavs)
+                    creacionpelis(pelicula);
+        })
+    }
+
+
+    function creacionpelis(pelicula){
+        let peliculas=document.getElementById("peliculas");
+         let divprin=document.createElement("div");
             divprin.className="peliculas__pelicula";
             let portada=document.createElement("img");
             portada.src=pelicula.Poster;
@@ -138,12 +195,12 @@
                     arrayfavoritos==null?arrayfavoritos=[pelicula.imdbID]:arrayfavoritos.push(pelicula.imdbID);
                 }else{
                     imagen.src="./src/img/Corazon-Vacio.png";
+                    arrayfavoritos=arrayfavoritos.filter(peli=>peli!=pelicula.imdbID)
                 }
                 localStorage.setItem("pelisFav",JSON.stringify(arrayfavoritos));
             })
-        });
     }
-
+    
 
     function detallePeli(peli){
         let fondogris=document.createElement("div");
