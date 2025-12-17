@@ -199,7 +199,7 @@ header select:focus {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(900px, 95%);
+    width: min(1000px, 95%);
     background: #535353;
     border-radius: 15px;
     display: flex;
@@ -216,14 +216,14 @@ header select:focus {
 }
 #muestra {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1%;
     max-height: 65vh;
 }
 
 #muestra__titulo{
     position:relative;
-    margin-right:80%;
+    justify-self: center;
 }
 #plotdetalle {
     padding: 10px;
@@ -237,9 +237,15 @@ header select:focus {
         gap:8vh
     }
     #detalles {
+        height: 90%;
+        width: 70vw;
         flex-direction: column;
         align-items: center;
         text-align: center;
+    }
+    #muestra{
+        height: 70%;
+        flex-flow: wrap;
     }
 
     #portada img {

@@ -32,6 +32,7 @@
     function comienzo(){
         busqueda="Pokemon";
        llamadaapi();
+       pagina++;
     }
 
 
@@ -57,26 +58,43 @@
         anio.addEventListener("keyup",(e)=>{
             if(!isNaN(Number(anio.value))){
                 let valor=Number (anio.value);
-                if(buscar.value.length>=3 &&(valor>0)&&anio.value.length>=4){
+                if(valor>=1000){
                     primera_buqueda=true;
                     pagina=1;
-                    busqueda=buscar.value;
+                    busqueda=buscar.value==""?"Pokemon":buscar.value;
                     llamadaapi()
                 }
-                if(buscar.value==""){
-                    if(busquedafavs){
-                        llamadafavsgeneral();
-                    }else{
+            }
+            if(buscar.value.trim()==""){
+                if(busquedafavs){
+                    llamadafavsgeneral();
+                }
+                else{
+                    if(anio.value==""){
+                        primera_buqueda=true;
+                        pagina=1;
                         busqueda="pokemon";
                         llamadaapi();
                     }
                 }
             }
         });
+        anio.addEventListener("change",(e)=>{
+            if(anio.value.length>=3 && (!isNaN(Number(anio.value)))){
+                if(Number(anio.value)>1000){
+                    primera_buqueda=true;
+                    pagina=1;
+                    busqueda=buscar.value==""?"Pokemon":buscar.value;
+                    llamadaapi()
+                }
+            }
+        })
+
         //Estos dos son para cuando cambias algo en el nombre 
         buscar.addEventListener("keyup",(e)=>{    
-            if(buscar.value.length>=3){
-                if((e.key.length==1||e.key=="Backspace")&&((!isNaN(Number(anio.value))&&anio.value.length>=4)||anio.value=="")){
+            if(buscar.value.trim().length>=3){
+                if((e.key.length==1||e.key=="Backspace")&&((!isNaN(Number(anio.value))||anio.value==""))){
+
                     primera_buqueda=true;
                     pagina=1;
                     busqueda=buscar.value;
@@ -87,6 +105,8 @@
                 if(busquedafavs){
                     llamadafavsgeneral();
                 }else{
+                    primera_buqueda=true;
+                    pagina=1;
                     busqueda="pokemon";
                     llamadaapi();
                 }
@@ -100,15 +120,35 @@
                 pagina=1;
                 busqueda=buscar.value;
                 llamadaapi()
-                }
+            }
         });
 
-        window.onscroll=()=>{
-            scrolleando=true;
-            if((window.innerHeight+window.scrollY)>= (document.body.offsetHeight-document.body.offsetHeight*0.15)){
-                if(!busquedafavs){
+        seleccion.addEventListener("change",()=>{
+            if(buscar.value.trim().length>=3&&anio.value.length>=4){
+                primera_buqueda=true;
+                pagina=1;
+                busqueda=buscar.value;
+                llamadaapi()
+            }
+            if(buscar.value.trim()==""){
+                if(busquedafavs){
+                    llamadafavsgeneral();
+                }else{
+                    primera_buqueda=true;
+                    pagina=1;
+                    busqueda="pokemon";
                     llamadaapi();
+                }
+            }
+        })
+
+        window.onscroll=()=>{
+            if((window.innerHeight+window.scrollY)>= (document.body.offsetHeight-document.body.offsetHeight*0.15)){
+                if(!busquedafavs){            
+                    scrolleando=true;
                     pagina++;
+                    llamadaapi();
+                    scrolleando=false;
                 }
             }
         }
@@ -119,8 +159,16 @@
         if(!peticionEnCurso){
             peticionEnCurso=true;
             fetch(url+"s="+busqueda+"&apikey="+clave+"&page="+pagina+(seleccion.value!=""?("&type="+seleccion.value):"")+(anio.value!=""?("&y="+anio.value):"")).then(response=> response.json()).then(data=>{
-                montajeBusqueda(data.Search);
-                peticionEnCurso=false;
+                if(data.Search==undefined && pagina==1){
+                    monatajeNulo();
+                    peticionEnCurso=false;
+                }
+                else{  
+                    if(data.Search!=undefined){                 
+                        montajeBusqueda(data.Search);
+                        peticionEnCurso=false;
+                    }
+                }
             });
            
         }
@@ -128,15 +176,40 @@
 
     function llamadafavsgeneral(){
         let peliculas=document.getElementById("peliculas");
-        peliculas.innerHTML="";
-        arrayfavoritos.forEach((codigo,index)=>{
+        let anio=document.getElementById("año");
+        let arraypeliculas=[];
+        let aniocorrecto,tipocorrecto;
+        let respuesta=0;;
+        arrayfavoritos.forEach((codigo)=>{
             fetch(url+"i="+codigo+"&apikey="+clave).then(response=> response.json()).then(data=>{
-                creacionpelis(data);
+                aniocorrecto=true;
+                tipocorrecto=true;
+                if(anio.value.length==4 && anio.value>0){
+                    aniocorrecto=anio.value==data.Year;
+                }
+                if(seleccion.value!=""){
+                    tipocorrecto=data.Type==seleccion.value;
+                }
+                if(aniocorrecto && tipocorrecto){
+                    arraypeliculas.push(data);
+                }
+                if(respuesta==arrayfavoritos.length-1){        
+                   peliculas.innerHTML="";
+                    montajeBusqueda(arraypeliculas);
+                }
+                respuesta++;
             });
         })
     }
 
-
+    function monatajeNulo(){
+        let peliculas=document.getElementById("peliculas");
+        peliculas.innerHTML="";
+        let mensajeerror=document.createElement("div")
+        mensajeerror.id="mensaje_error";
+        mensajeerror.innerHTML="<p>No existen Peliculas con esas Caracteristicas</p>"
+        peliculas.appendChild(mensajeerror);
+    }
     function montajeBusqueda(listado){
         let peliculas=document.getElementById("peliculas");
         if(primera_buqueda){
